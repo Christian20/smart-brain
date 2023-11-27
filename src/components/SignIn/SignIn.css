@@ -1,0 +1,8 @@
+
+.bg-light-orange {
+    background-color: rgba(245, 23, 23, 0.7) /* Replace with your preferred lighter orange color */
+  }
+.small-padding {
+    padding-top: '5px'; 
+    padding-bottom: '5px';
+}
