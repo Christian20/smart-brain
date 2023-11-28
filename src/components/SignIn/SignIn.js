@@ -8,7 +8,7 @@ class SignIn extends React.Component {
             signInEmail: '',
             signInPassword: '',
             errorMessage: '',
-            localIsLoading: false
+            signInIsLoading: false
         }
     }
 
@@ -21,7 +21,7 @@ class SignIn extends React.Component {
     }
 
     onSubmitSignIn = () => {
-        this.setState({ localIsLoading: true });
+        this.setState({ signInIsLoading: true });
 
         //fetch('http://localhost:3000/signin', {
         fetch('https://smart-brain-api-rzbk.onrender.com/signin', {
@@ -34,7 +34,7 @@ class SignIn extends React.Component {
         })
             .then(response => response.json())
             .then(response => {
-                this.setState({ localIsLoading: false });
+                this.setState({ signInIsLoading: false });
 
                 if (response?.user?.id) {
                     const sessionToken = response.sessionToken;
@@ -53,7 +53,7 @@ class SignIn extends React.Component {
             .catch(error => {
                 console.log('Error during sign in:', error);
                 // Handle other errors if needed
-                this.setState({ localIsLoading: false });
+                this.setState({ signInIsLoading: false });
             });
     }
 
@@ -65,11 +65,11 @@ class SignIn extends React.Component {
 
     render() {
         const { onRouteChange } = this.props;
-        const { localIsLoading } = this.state;
+        const { errorMessage, signInIsLoading, signInEmail, signInPassword } = this.state;
 
         return (              
                 <div className="flex justify-center items-center mt5">
-                    {localIsLoading ? (
+                    {signInIsLoading ? (
                     <div className="flex items-center justify-center mt6">
                         <span className="spinner mt5"></span>
                     </div>
@@ -79,14 +79,14 @@ class SignIn extends React.Component {
                             <div className="measure">
                                 <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
                                     <legend className="f1 fw6 ph0 mh0">Sign In</legend>
-                                    {!this.state.errorMessage &&
+                                    {!errorMessage &&
                                         <div className="tc br3 pa2 transparent">  
                                         <div>&nbsp;</div>                              
                                         </div>
                                     }
-                                    {this.state.errorMessage &&
+                                    {errorMessage &&
                                         <div className="error-box bg-light-orange white tc br3 pa2 shadow-5">                                
-                                            <div>{this.state.errorMessage}</div>
+                                            <div>{errorMessage}</div>
                                         </div>
                                     }
                                     <div className="mt3">
@@ -96,7 +96,7 @@ class SignIn extends React.Component {
                                             type="email"
                                             name="email-address"
                                             id="email-address"
-                                            value={this.state.signInEmail}
+                                            value={signInEmail}
                                             onChange={this.onEmailChange}
                                             onKeyDown={this.onKeyDown}
                                         />
@@ -108,7 +108,7 @@ class SignIn extends React.Component {
                                             type="password"
                                             name="password"
                                             id="password"
-                                            value={this.state.signInPassword}
+                                            value={signInPassword}
                                             onChange={this.onPasswordChange}
                                             onKeyDown={this.onKeyDown}
                                         />

@@ -7,7 +7,8 @@ class Register extends React.Component {
             name: '',
             email: '',
             password: '',
-            errorMessage: ''
+            errorMessage: '',
+            registerIsLoading: false
         }
     }
 
@@ -24,6 +25,8 @@ class Register extends React.Component {
     }
 
     onSubmitRegister = () => {
+        this.setState({ registerIsLoading: true });
+
         fetch('https://smart-brain-api-rzbk.onrender.com/register', {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
@@ -35,6 +38,8 @@ class Register extends React.Component {
         })
         .then(response => response.json())
         .then(response => {
+            this.setState({ registerIsLoading: false });
+
             if (response.user) {
                 // In the success block of your sign-in and register functions
                 const sessionToken = response.sessionToken;
@@ -51,7 +56,12 @@ class Register extends React.Component {
                     password: ''
                 });
             }
-        })        
+        })
+        .catch(error => {
+            console.log('Error during registration:', error);
+            // Handle other errors if needed
+            this.setState({ registerIsLoading: false });
+        });        
     }
 
     onKeyDown = (event) => {
@@ -60,29 +70,35 @@ class Register extends React.Component {
         }
     }
 
-    render() {      
+    render() { 
+        const { errorMessage, registerIsLoading, name, email, password } = this.state;     
         return(
             <div className="flex justify-center items-center h-screen mt5">
+                {registerIsLoading ? (
+                    <div className="flex items-center justify-center mt6">
+                        <span className="spinner mt5"></span>
+                    </div>
+                    ) : (
                 <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
                     <main className="pa4 black-80">
                         <div className="measure">
                             <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
                             <legend className="f1 fw6 ph0 mh0">Register</legend>
-                            {!this.state.errorMessage &&
+                            {!errorMessage &&
                                     <div className="tc br3 pa2 transparent">  
                                     <div>&nbsp;</div>                              
                                     </div>
                             }
-                            {this.state.errorMessage &&
+                            {errorMessage &&
                                 <div className="error-box bg-light-orange white tc br3 pa2 shadow-5">                                
-                                    <div>{this.state.errorMessage}</div>
+                                    <div>{errorMessage}</div>
                                 </div>
                             }
                             <div className="mt3">
                                 <label className="db fw6 lh-copy f6" htmlFor="name">Name</label>
                                 <input 
                                     className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="text" name="name"  id="name"
-                                    value={this.state.name} 
+                                    value={name} 
                                     onChange={this.onNameChange}
                                     onKeyDown={this.onKeyDown} 
                                 />
@@ -91,7 +107,7 @@ class Register extends React.Component {
                                 <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
                                 <input 
                                     className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="email" name="email-address"  id="email-address" 
-                                    value={this.state.email} 
+                                    value={email} 
                                     onChange={this.onEmailChange}
                                     onKeyDown={this.onKeyDown} 
                                 />
@@ -100,7 +116,7 @@ class Register extends React.Component {
                                 <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
                                 <input 
                                     className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="password" name="password"  id="password" 
-                                    value={this.state.password} 
+                                    value={password} 
                                     onChange={this.onPasswordChange}
                                     onKeyDown={this.onKeyDown} 
                                 />
@@ -111,7 +127,7 @@ class Register extends React.Component {
                             </div>
                         </div>
                     </main>
-                </article>
+                </article>)}
             </div>
         )
     }
