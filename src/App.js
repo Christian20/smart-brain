@@ -38,9 +38,9 @@ class App extends Component {
     // Clear the session token from localStorage
     localStorage.removeItem('sessionToken');
 
-    if (this.tokenValidationInterval) {
-      clearInterval(this.tokenValidationInterval);
-    }
+    // if (this.tokenValidationInterval) {
+    //   clearInterval(this.tokenValidationInterval);
+    // }
   }
 
   validateToken = (sessionToken) => {
@@ -75,20 +75,13 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const sessionToken = localStorage.getItem('sessionToken');
-    if (sessionToken) {
-      // Validate the token on the server side
-      this.validateToken(sessionToken);
-    } else {
-      this.setState({ isLoading: false }); // Set loading state to false
-    }
-  }
-
-  componentWillUnmount() {
-    // Clear the interval when the component is unmounted to avoid memory leaks
-    if (this.tokenValidationInterval) {
-      clearInterval(this.tokenValidationInterval);
-    }
+    // const sessionToken = localStorage.getItem('sessionToken');
+    // if (sessionToken) {
+    //   // Validate the token on the server side
+    //   this.validateToken(sessionToken);
+    // } else {
+    //   this.setState({ isLoading: false }); // Set loading state to false
+    // }
   }
 
   loadUser = (data) => {
@@ -175,7 +168,6 @@ class App extends Component {
   }
 
   onRouteChange = (route) => {
-    const sessionToken = localStorage.getItem('sessionToken');
     if (route === 'signIn') {
       this.setState(initialState);
       this.setState({isLoading: false});
@@ -183,11 +175,6 @@ class App extends Component {
       localStorage.removeItem('sessionToken');
     } else if (route === 'home') {
       this.setState({isSignedIn: true});
-      // Verify if the token has not expired
-      this.tokenValidationInterval = setInterval(() => {
-        this.validateToken(sessionToken);
-        console.log('Validating token every 1 min...');
-      }, 60000);
     }
     this.setState({route: route});
   }

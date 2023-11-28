@@ -7,7 +7,8 @@ class SignIn extends React.Component {
         this.state = {
             signInEmail: '',
             signInPassword: '',
-            errorMessage: ''
+            errorMessage: '',
+            isLoading: false
         }
     }
 
@@ -20,6 +21,8 @@ class SignIn extends React.Component {
     }
 
     onSubmitSignIn = () => {
+        this.setState({ isLoading: true });
+
         //fetch('http://localhost:3000/signin', {
         fetch('https://smart-brain-api-rzbk.onrender.com/signin', {
             method: 'post',
@@ -31,6 +34,8 @@ class SignIn extends React.Component {
         })
             .then(response => response.json())
             .then(response => {
+                this.setState({ isLoading: false });
+
                 if (response?.user?.id) {
                     const sessionToken = response.sessionToken;
                     localStorage.setItem('sessionToken', sessionToken);
@@ -59,6 +64,8 @@ class SignIn extends React.Component {
 
     render() {
         const { onRouteChange } = this.props;
+        const { isLoading } = this.state;
+
         return (
             <div className="flex justify-center items-center mt5">
                 <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
@@ -109,6 +116,7 @@ class SignIn extends React.Component {
                                     value="Sign in"
                                 />
                             </div>
+                            {isLoading && <div className="spinner"></div>}
                             <div className="lh-copy mt3">
                                 <p onClick={() => onRouteChange('register')} href="#0" className="f6 link dim black db pointer">Register</p>
                             </div>
