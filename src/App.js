@@ -136,6 +136,7 @@ class App extends Component {
     const sessionToken = localStorage.getItem('sessionToken');
     this.setState({imageUrl: this.state.input}, () => {
       //send image url to backend, where the clarifai API call occurs
+      //fetch('http://localhost:3000/clarifai', {
       fetch('https://smart-brain-api-rzbk.onrender.com/clarifai', {
         method: 'post',
         headers: {
@@ -149,6 +150,7 @@ class App extends Component {
       .then(response => response.json())
       .then(response => {
         if (response) {
+          //fetch('http://localhost:3000/image', {
           fetch('https://smart-brain-api-rzbk.onrender.com/image', {
             method: 'put',
             headers: {
