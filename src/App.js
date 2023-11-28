@@ -33,10 +33,11 @@ class App extends Component {
 
   // Add this function to handle sign-out
   handleSignOut = () => {
-    this.setState(initialState);
-    this.setState({isLoading: false});
     // Clear the session token from localStorage
     localStorage.removeItem('sessionToken');
+    this.setState(initialState);
+    this.setState({isLoading: false});
+    
 
     // if (this.tokenValidationInterval) {
     //   clearInterval(this.tokenValidationInterval);
@@ -75,13 +76,13 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // const sessionToken = localStorage.getItem('sessionToken');
-    // if (sessionToken) {
-    //   // Validate the token on the server side
-    //   this.validateToken(sessionToken);
-    // } else {
-    //   this.setState({ isLoading: false }); // Set loading state to false
-    // }
+    const sessionToken = localStorage.getItem('sessionToken');
+    if (sessionToken) {
+      // Validate the token on the server side
+      this.validateToken(sessionToken);
+    } else {
+      this.setState({ isLoading: false }); // Set loading state to false
+    }
   }
 
   loadUser = (data) => {

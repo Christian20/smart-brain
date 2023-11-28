@@ -8,7 +8,7 @@ class SignIn extends React.Component {
             signInEmail: '',
             signInPassword: '',
             errorMessage: '',
-            isLoading: false
+            localIsLoading: false
         }
     }
 
@@ -21,7 +21,7 @@ class SignIn extends React.Component {
     }
 
     onSubmitSignIn = () => {
-        this.setState({ isLoading: true });
+        this.setState({ localIsLoading: true });
 
         //fetch('http://localhost:3000/signin', {
         fetch('https://smart-brain-api-rzbk.onrender.com/signin', {
@@ -34,7 +34,7 @@ class SignIn extends React.Component {
         })
             .then(response => response.json())
             .then(response => {
-                this.setState({ isLoading: false });
+                this.setState({ localIsLoading: false });
 
                 if (response?.user?.id) {
                     const sessionToken = response.sessionToken;
@@ -53,6 +53,7 @@ class SignIn extends React.Component {
             .catch(error => {
                 console.log('Error during sign in:', error);
                 // Handle other errors if needed
+                this.setState({ localIsLoading: false });
             });
     }
 
@@ -64,66 +65,70 @@ class SignIn extends React.Component {
 
     render() {
         const { onRouteChange } = this.props;
-        const { isLoading } = this.state;
+        const { localIsLoading } = this.state;
 
-        return (
-            <div className="flex justify-center items-center mt5">
-                <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
-                    <main className="pa4 black-80">
-                        <div className="measure">
-                            <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
-                                <legend className="f1 fw6 ph0 mh0">Sign In</legend>
-                                {!this.state.errorMessage &&
-                                    <div className="tc br3 pa2 transparent">  
-                                    <div>&nbsp;</div>                              
+        return (              
+                <div className="flex justify-center items-center mt5">
+                    {localIsLoading ? (
+                    <div className="flex items-center justify-center mt6">
+                        <span className="spinner mt5"></span>
+                    </div>
+                    ) : (
+                    <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
+                        <main className="pa4 black-80">
+                            <div className="measure">
+                                <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
+                                    <legend className="f1 fw6 ph0 mh0">Sign In</legend>
+                                    {!this.state.errorMessage &&
+                                        <div className="tc br3 pa2 transparent">  
+                                        <div>&nbsp;</div>                              
+                                        </div>
+                                    }
+                                    {this.state.errorMessage &&
+                                        <div className="error-box bg-light-orange white tc br3 pa2 shadow-5">                                
+                                            <div>{this.state.errorMessage}</div>
+                                        </div>
+                                    }
+                                    <div className="mt3">
+                                        <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
+                                        <input
+                                            className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                                            type="email"
+                                            name="email-address"
+                                            id="email-address"
+                                            value={this.state.signInEmail}
+                                            onChange={this.onEmailChange}
+                                            onKeyDown={this.onKeyDown}
+                                        />
                                     </div>
-                                }
-                                {this.state.errorMessage &&
-                                    <div className="error-box bg-light-orange white tc br3 pa2 shadow-5">                                
-                                        <div>{this.state.errorMessage}</div>
+                                    <div className="mv3">
+                                        <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
+                                        <input
+                                            className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                                            type="password"
+                                            name="password"
+                                            id="password"
+                                            value={this.state.signInPassword}
+                                            onChange={this.onPasswordChange}
+                                            onKeyDown={this.onKeyDown}
+                                        />
                                     </div>
-                                }
-                                <div className="mt3">
-                                    <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
+                                </fieldset>
+                                <div className="">
                                     <input
-                                        className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
-                                        type="email"
-                                        name="email-address"
-                                        id="email-address"
-                                        value={this.state.signInEmail}
-                                        onChange={this.onEmailChange}
-                                        onKeyDown={this.onKeyDown}
+                                        onClick={this.onSubmitSignIn}
+                                        className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+                                        type="submit"
+                                        value="Sign in"
                                     />
                                 </div>
-                                <div className="mv3">
-                                    <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
-                                    <input
-                                        className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
-                                        type="password"
-                                        name="password"
-                                        id="password"
-                                        value={this.state.signInPassword}
-                                        onChange={this.onPasswordChange}
-                                        onKeyDown={this.onKeyDown}
-                                    />
+                                <div className="lh-copy mt3">
+                                    <p onClick={() => onRouteChange('register')} href="#0" className="f6 link dim black db pointer">Register</p>
                                 </div>
-                            </fieldset>
-                            <div className="">
-                                <input
-                                    onClick={this.onSubmitSignIn}
-                                    className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
-                                    type="submit"
-                                    value="Sign in"
-                                />
                             </div>
-                            {isLoading && <div className="spinner"></div>}
-                            <div className="lh-copy mt3">
-                                <p onClick={() => onRouteChange('register')} href="#0" className="f6 link dim black db pointer">Register</p>
-                            </div>
-                        </div>
-                    </main>
-                </article>
-            </div>
+                        </main>
+                    </article>)} 
+                </div>             
         );
     }
 }
