@@ -22,7 +22,8 @@ const initialState = {
     email: '',
     entries: 0,
     joined: ''
-  }
+  },
+  numParticles: window.innerWidth < 600 ? 50 : 200
 }
 
 class App extends Component {
@@ -76,6 +77,9 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.handleResize();
+    window.addEventListener('resize', this.handleResize);
+
     const sessionToken = localStorage.getItem('sessionToken');
     if (sessionToken) {
       // Validate the token on the server side
@@ -84,6 +88,20 @@ class App extends Component {
       this.setState({ isLoading: false }); // Set loading state to false
     }
   }
+
+  componentWillUnmount() {
+    // Cleanup the event listener on component unmount
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  handleResize = () => {
+    const newNumParticles = window.innerWidth < 600 ? 50 : 200;
+    if (newNumParticles !== this.state.numParticles) {
+      this.setState({
+        numParticles: newNumParticles,
+      });
+    }
+  };
 
   loadUser = (data) => {
     this.setState({
@@ -181,10 +199,11 @@ class App extends Component {
   }
 
   render() {
-    const { isSignedIn, route, user, box, imageUrl, isLoading } = this.state;
+    const { isSignedIn, route, user, box, imageUrl, isLoading, numParticles } = this.state;
+
     return (
       <div className={`App ${isLoading ? 'flex items-center justify-center vh-100' : ''}`}>
-        <ParticlesBg color="#FFFFFF" type="cobweb" bg={true} num={200} />
+        <ParticlesBg color="#FFFFFF" type="cobweb" bg={true} num={numParticles} />
         {!isLoading && (
           <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
         )}

@@ -8,9 +8,35 @@ class SignIn extends React.Component {
             signInEmail: '',
             signInPassword: '',
             errorMessage: '',
-            signInIsLoading: false
+            signInIsLoading: false,
+            marginStyle: {},
+            marginTopClass: 'mt5'
         }
     }
+
+    componentDidMount() {
+        window.addEventListener('resize', this.handleResize);
+        this.handleResize();
+    }
+    
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.handleResize);
+    }
+    
+    handleResize = () => {
+        const screenWidth = window.innerWidth;
+        let marginTopClass = 'mt5';
+        let marginStyle = {};
+    
+        // Adjust marginTopClass for smaller screens
+        if (screenWidth <= 600) {
+            marginTopClass = 'mt1';
+            marginStyle = { marginLeft: '15px', marginRight: '15px' }
+        }
+    
+        this.setState({ marginTopClass, marginStyle });
+    };
+    
 
     onEmailChange = (event) => {
         this.setState({ signInEmail: event.target.value, errorMessage: '' });
@@ -65,16 +91,16 @@ class SignIn extends React.Component {
 
     render() {
         const { onRouteChange } = this.props;
-        const { errorMessage, signInIsLoading, signInEmail, signInPassword } = this.state;
+        const { errorMessage, signInIsLoading, signInEmail, signInPassword, marginTopClass, marginStyle } = this.state;
 
         return (              
-                <div className="flex justify-center items-center mt5">
+            <div className={`flex justify-center items-center ${marginTopClass}`}>
                     {signInIsLoading ? (
                     <div className="flex items-center justify-center mt6">
                         <span className="spinner mt5"></span>
                     </div>
                     ) : (
-                    <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
+                    <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center" style={marginStyle}>
                         <main className="pa4 black-80">
                             <div className="measure">
                                 <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
