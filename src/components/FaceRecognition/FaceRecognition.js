@@ -9,8 +9,11 @@ const FaceRecognition = ({ imageUrl, boxes }) => {
         const calculateImageWidth = () => {
             const windowWidth = window.innerWidth;
             const desiredMargins = 40; // 20px on each side
-            const newWidth = windowWidth - desiredMargins;
-            setImageWidth(`${newWidth}px`);
+            const isSmallScreen = windowWidth < 600;
+
+            // Set the image width based on screen width and device type
+            const newWidth = isSmallScreen ? windowWidth - desiredMargins : '500px';
+            setImageWidth(newWidth);
         };
 
         // Call the function initially and on window resize
