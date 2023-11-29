@@ -1,15 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './FaceRecognition.css';
 
-const FaceRecognition = ( { imageUrl, box } ) => {
-    return(
+const FaceRecognition = ({ imageUrl, box }) => {
+    const [imageWidth, setImageWidth] = useState('100%');
+
+    useEffect(() => {
+        // Calculate the width dynamically based on window width and desired margins
+        const calculateImageWidth = () => {
+            const windowWidth = window.innerWidth;
+            const desiredMargins = 40; // 15px on each side
+            const newWidth = windowWidth - desiredMargins;
+            setImageWidth(`${newWidth}px`);
+        };
+
+        // Call the function initially and on window resize
+        calculateImageWidth();
+        window.addEventListener('resize', calculateImageWidth);
+
+        // Cleanup the event listener on component unmount
+        return () => {
+            window.removeEventListener('resize', calculateImageWidth);
+        };
+    }, []); // Empty dependency array means this effect runs once after the initial render
+
+    return (
         <div className='center ma'>
             <div className='absolute mt2'>
-                <img id='inputimage' alt='' src={imageUrl} width='500px' height='auto' />
-                <div className='bounding-box' style={{top: box.topRow, right: box.rightCol, bottom: box.bottomRow, left: box.leftCol}}></div>
+                <img
+                    id='inputimage'
+                    alt=''
+                    src={imageUrl}
+                    style={{ width: imageWidth, height: 'auto' }}
+                />
+                <div
+                    className='bounding-box'
+                    style={{
+                        top: box.topRow,
+                        right: box.rightCol,
+                        bottom: box.bottomRow,
+                        left: box.leftCol,
+                    }}
+                ></div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default FaceRecognition;
