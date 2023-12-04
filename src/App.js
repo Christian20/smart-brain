@@ -26,6 +26,8 @@ const initialState = {
   numParticles: window.innerWidth < 600 ? 50 : 200
 }
 
+let sessionToken = localStorage.getItem('sessionToken');
+
 class App extends Component {
   constructor() {
     super();
@@ -36,13 +38,13 @@ class App extends Component {
   handleSignOut = () => {
     // Clear the session token from localStorage
     localStorage.removeItem('sessionToken');
-    this.setState(initialState);
-    this.setState({isLoading: false});
+    sessionToken = null;
+    this.setState({
+      ...initialState,
+      route: 'signIn',
+      isLoading: false,
+    });
     
-
-    // if (this.tokenValidationInterval) {
-    //   clearInterval(this.tokenValidationInterval);
-    // }
   }
 
   validateToken = (sessionToken) => {
@@ -80,7 +82,6 @@ class App extends Component {
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
 
-    const sessionToken = localStorage.getItem('sessionToken');
     if (sessionToken) {
       // Validate the token on the server side
       this.validateToken(sessionToken);
@@ -116,7 +117,6 @@ class App extends Component {
     });
 
     // Save the session token in localStorage
-    const sessionToken = localStorage.getItem('sessionToken');
     if (!sessionToken) {
       // If the session token is not present in localStorage, store it
       localStorage.setItem('sessionToken', data.sessionToken);
@@ -149,7 +149,6 @@ class App extends Component {
   }
 
   onPictureSubmit = () => {
-    const sessionToken = localStorage.getItem('sessionToken');
     this.setState({imageUrl: this.state.input}, () => {
       //send image url to backend, where the clarifai API call occurs
       //fetch('http://localhost:3000/clarifai', {
@@ -192,10 +191,7 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if (route === 'signIn') {
-      this.setState(initialState);
-      this.setState({isLoading: false});
-      // Clear the session token from localStorage
-      localStorage.removeItem('sessionToken');
+      this.handleSignOut();
     } else if (route === 'home') {
       this.setState({isSignedIn: true});
     }
