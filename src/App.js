@@ -38,7 +38,6 @@ class App extends Component {
 
   // Add this function to handle sign-out
   handleSignOut = () => {
-    console.log('handling sign out...');
     // Clear the session token from localStorage
     localStorage.removeItem('sessionToken');
     //sessionToken = null;
@@ -154,8 +153,7 @@ class App extends Component {
   }
 
   onPictureSubmit = () => {
-    const { sessionToken } = this.state;
-    console.log('session token: ' + sessionToken);   
+    const { sessionToken } = this.state;  
     this.setState({imageUrl: this.state.input}, () => {
       //send image url to backend, where the clarifai API call occurs
       //fetch('http://localhost:3000/clarifai', {
