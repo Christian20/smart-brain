@@ -13,6 +13,7 @@ const initialState = {
   input: '',
   imageUrl: '',
   boxes: {},
+  sessionToken: localStorage.getItem('sessionToken') || null,
   route: localStorage.getItem('sessionToken') ? 'home' : 'signIn',
   isSignedIn: false,
   isLoading: true,
@@ -24,9 +25,10 @@ const initialState = {
     joined: ''
   },
   numParticles: window.innerWidth < 600 ? 50 : 200
+  
 }
 
-let sessionToken = localStorage.getItem('sessionToken');
+//let sessionToken = localStorage.getItem('sessionToken');
 
 class App extends Component {
   constructor() {
@@ -36,13 +38,15 @@ class App extends Component {
 
   // Add this function to handle sign-out
   handleSignOut = () => {
+    console.log('handling sign out...');
     // Clear the session token from localStorage
     localStorage.removeItem('sessionToken');
-    sessionToken = null;
+    //sessionToken = null;
     this.setState({
       ...initialState,
       route: 'signIn',
       isLoading: false,
+      sessionToken: null
     });
     
   }
@@ -81,7 +85,7 @@ class App extends Component {
   componentDidMount() {
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
-
+    const { sessionToken } = this.state;
     if (sessionToken) {
       // Validate the token on the server side
       this.validateToken(sessionToken);
@@ -113,9 +117,10 @@ class App extends Component {
         entries: data.user.entries,
         joined: data.user.joined
       },
+      sessionToken: data.sessionToken,
       isSignedIn: true  // Assuming that if user data is provided, the user is signed in
     });
-
+    const { sessionToken } = this.state;
     // Save the session token in localStorage
     if (!sessionToken) {
       // If the session token is not present in localStorage, store it
@@ -149,6 +154,8 @@ class App extends Component {
   }
 
   onPictureSubmit = () => {
+    const { sessionToken } = this.state;
+    console.log('session token: ' + sessionToken);   
     this.setState({imageUrl: this.state.input}, () => {
       //send image url to backend, where the clarifai API call occurs
       //fetch('http://localhost:3000/clarifai', {
