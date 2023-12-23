@@ -153,6 +153,7 @@ class App extends Component {
   }
 
   onPictureSubmit = () => {
+    
     const { sessionToken } = this.state;  
     this.setState({imageUrl: this.state.input}, () => {
       //send image url to backend, where the clarifai API call occurs
